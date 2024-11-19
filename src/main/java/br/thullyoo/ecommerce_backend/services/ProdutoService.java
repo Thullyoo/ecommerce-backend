@@ -29,17 +29,18 @@ public class ProdutoService {
         });
     }
 
-    public void editarProduto(Long id, ProdutoRequest produtoRequest){
+    public Produto editarProduto(Long id, ProdutoRequest produtoRequest){
         produtoRepository.findById(id).ifPresentOrElse((produto) ->{
                     produto.setNome(produtoRequest.getNome());
                     produto.setDescricao(produtoRequest.getDescricao());
                     produto.setValor(produtoRequest.getValor());
                     produto.setUrl_imagem(produtoRequest.getUrl_imagem());
                     produtoRepository.save(produto);
-                },
+                    },
                 ()->{
                     throw new RuntimeException("Produto não encotrado");
                 });
+        return produtoRepository.findById(id).get();
     }
 
     public List<Produto> listarProdutos(){
