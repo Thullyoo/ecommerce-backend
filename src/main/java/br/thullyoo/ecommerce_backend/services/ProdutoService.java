@@ -7,6 +7,7 @@ import br.thullyoo.ecommerce_backend.repositories.ProdutoRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.UUID;
 
 @Service
 public class ProdutoService {
@@ -20,7 +21,7 @@ public class ProdutoService {
         return produtoRepository.save(produto);
     }
 
-    public void excluirProduto(Long id){
+    public void excluirProduto(UUID id){
         produtoRepository.findById(id).ifPresentOrElse((produto) ->{
                 produtoRepository.delete(produto);
                 },

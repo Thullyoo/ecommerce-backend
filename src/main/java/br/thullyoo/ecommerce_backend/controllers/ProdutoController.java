@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/produto")
@@ -36,7 +37,7 @@ public class ProdutoController {
     }
 
     @DeleteMapping("/{produto_id}")
-    public ResponseEntity<Void> excluirProduto(@PathVariable("produto_id") Long produto_id){
+    public ResponseEntity<Void> excluirProduto(@PathVariable("produto_id") UUID produto_id){
         produtoService.excluirProduto(produto_id);
 
         return ResponseEntity.noContent().build();
