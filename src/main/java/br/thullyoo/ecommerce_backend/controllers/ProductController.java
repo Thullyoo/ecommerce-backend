@@ -19,7 +19,7 @@ public class ProductController {
 
     @PostMapping
     public ResponseEntity<Product> registrarProduto(@RequestBody ProductRequest productRequest){
-        var produto = productService.saveProduct(productRequest);
+        var produto = productService.registerProduct(productRequest);
         return ResponseEntity.ok().body(produto);
     }
 
@@ -35,9 +35,9 @@ public class ProductController {
         return ResponseEntity.ok().body(produtoLista);
     }
 
-    @DeleteMapping("/{produto_id}")
-    public ResponseEntity<Void> excluirProduto(@PathVariable("produto_id") UUID produto_id){
-        productService.deleteProduct(produto_id);
+    @DeleteMapping("/{user_id}/{product_id}")
+    public ResponseEntity<Void> excluirProduto(@PathVariable("product_id") UUID product_id, @PathVariable("user_id") UUID user_id){
+        productService.deleteProduct(product_id, user_id);
 
         return ResponseEntity.noContent().build();
     }
