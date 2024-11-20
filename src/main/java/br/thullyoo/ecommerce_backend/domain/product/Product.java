@@ -32,6 +32,14 @@ public class Product {
     @JoinColumn(name = "user_id")
     private User user;
 
+    public Boolean getAvailable() {
+        return isAvailable;
+    }
+
+    public void setAvailable(Boolean available) {
+        isAvailable = available;
+    }
+
     public UUID getId() {
         return id;
     }
