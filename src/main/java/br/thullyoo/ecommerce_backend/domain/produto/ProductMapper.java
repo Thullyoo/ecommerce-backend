@@ -3,8 +3,8 @@ package br.thullyoo.ecommerce_backend.domain.produto;
 import org.mapstruct.Mapper;
 
 @Mapper(componentModel = "spring")
-public interface ProdutoMapper {
+public interface ProductMapper {
 
-    Produto toProduto(ProdutoRequest produtoRequest);
+    Product toProduct(ProductRequest productRequest);
 
 }
