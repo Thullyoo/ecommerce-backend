@@ -33,7 +33,7 @@ public class ProductService {
     public Product editProduct(UUID id, ProductRequest productRequest){
         produtoRepository.findById(id).ifPresentOrElse((produto) ->{
                     produto.setName(productRequest.getName());
-                    produto.setDescription(productRequest.getDescrription());
+                    produto.setDescription(productRequest.getDescription());
                     produto.setValue(productRequest.getValue());
                     produto.setUrl_image(productRequest.getUrl_image());
                     produtoRepository.save(produto);
