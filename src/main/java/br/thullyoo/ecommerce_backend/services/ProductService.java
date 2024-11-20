@@ -83,4 +83,12 @@ public class ProductService {
         return produtoRepository.findAll();
     }
 
+    public List<Product> listProductByUserId(UUID user_id){
+        var user = userRepository.findById(user_id);
+        if (user.isEmpty()){
+            throw new RuntimeException("Usuário não encontrado");
+        }
+
+        return user.get().getProducts();
+    }
 }
