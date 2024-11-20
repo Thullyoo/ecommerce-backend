@@ -25,8 +25,17 @@ public class ProductService {
         this.userRepository = userRepository;
     }
 
-    public Product saveProduct(ProductRequest productRequest){
+    public Product registerProduct(ProductRequest productRequest){
         Product product = productMapper.toProduct(productRequest);
+        var user = userRepository.findById(productRequest.getUser_id());
+        if (user.isEmpty()){
+            throw new RuntimeException("Usuário não encontrado");
+        }
+        product.setUser(user.get());
+        List<Product> products = user.get().getProducts();
+        products.add(product);
+        user.get().setProducts(products);
+        userRepository.save(user.get());
         return produtoRepository.save(product);
     }
 
@@ -50,11 +59,19 @@ public class ProductService {
 
     public Product editProduct(UUID id, ProductRequest productRequest){
         produtoRepository.findById(id).ifPresentOrElse((produto) ->{
-                    produto.setName(productRequest.getName());
-                    produto.setDescription(productRequest.getDescription());
-                    produto.setValue(productRequest.getValue());
-                    produto.setUrl_image(productRequest.getUrl_image());
-                    produtoRepository.save(produto);
+                    var user = userRepository.findById(productRequest.getUser_id());
+                    if (user.isEmpty()){
+                        throw new RuntimeException("Usuário não encontrado");
+                    }
+                    user.get().getProducts().forEach((product -> {
+                        if (product.equals(produto)){
+                            produto.setName(productRequest.getName());
+                            produto.setDescription(productRequest.getDescription());
+                            produto.setValue(productRequest.getValue());
+                            produto.setUrl_image(productRequest.getUrl_image());
+                            produtoRepository.save(produto);
+                        }
+                    }));
                     },
                 ()->{
                     throw new RuntimeException("Produto não encotrado");
