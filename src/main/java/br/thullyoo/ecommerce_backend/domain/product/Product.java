@@ -26,6 +26,8 @@ public class Product {
 
     private String description;
 
+    private Boolean isAvailable;
+
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;
