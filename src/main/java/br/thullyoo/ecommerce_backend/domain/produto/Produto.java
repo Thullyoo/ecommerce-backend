@@ -1,13 +1,10 @@
 package br.thullyoo.ecommerce_backend.domain.produto;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
-import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
+
+import java.util.UUID;
 
 @Entity
 @Table(name = "TB_PRODUTOS")
@@ -16,8 +13,9 @@ import lombok.Setter;
 public class Produto {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.UUID)
     @Column(name = "produto_id")
-    private Long id;
+    private UUID id;
 
     private String nome;
 
@@ -27,11 +25,11 @@ public class Produto {
 
     private String descricao;
 
-    public Long getId() {
+    public UUID getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(UUID id) {
         this.id = id;
     }
 
