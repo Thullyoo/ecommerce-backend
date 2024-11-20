@@ -1,8 +1,8 @@
 package br.thullyoo.ecommerce_backend.services;
 
-import br.thullyoo.ecommerce_backend.domain.produto.Product;
-import br.thullyoo.ecommerce_backend.domain.produto.ProductMapper;
-import br.thullyoo.ecommerce_backend.domain.produto.ProductRequest;
+import br.thullyoo.ecommerce_backend.domain.product.Product;
+import br.thullyoo.ecommerce_backend.domain.product.ProductMapper;
+import br.thullyoo.ecommerce_backend.domain.product.ProductRequest;
 import br.thullyoo.ecommerce_backend.repositories.ProductRepository;
 import org.springframework.stereotype.Service;
 

@@ -1,7 +1,7 @@
 package br.thullyoo.ecommerce_backend.domain.user;
 
-import br.thullyoo.ecommerce_backend.domain.compra.Purchase;
-import br.thullyoo.ecommerce_backend.domain.produto.Product;
+import br.thullyoo.ecommerce_backend.domain.purchase.Purchase;
+import br.thullyoo.ecommerce_backend.domain.product.Product;
 import jakarta.persistence.*;
 
 import java.time.LocalDate;

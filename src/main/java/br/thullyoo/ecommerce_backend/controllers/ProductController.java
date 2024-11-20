@@ -1,7 +1,7 @@
 package br.thullyoo.ecommerce_backend.controllers;
 
-import br.thullyoo.ecommerce_backend.domain.produto.Product;
-import br.thullyoo.ecommerce_backend.domain.produto.ProductRequest;
+import br.thullyoo.ecommerce_backend.domain.product.Product;
+import br.thullyoo.ecommerce_backend.domain.product.ProductRequest;
 import br.thullyoo.ecommerce_backend.services.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;

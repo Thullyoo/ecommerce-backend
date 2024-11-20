@@ -1,4 +1,4 @@
-package br.thullyoo.ecommerce_backend.domain.produto;
+package br.thullyoo.ecommerce_backend.domain.product;
 
 import br.thullyoo.ecommerce_backend.domain.user.User;
 import jakarta.persistence.*;

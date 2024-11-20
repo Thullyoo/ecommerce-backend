@@ -1,4 +1,4 @@
-package br.thullyoo.ecommerce_backend.domain.produto;
+package br.thullyoo.ecommerce_backend.domain.product;
 
 import org.mapstruct.Mapper;
 
