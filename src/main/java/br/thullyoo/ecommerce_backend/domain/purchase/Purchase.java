@@ -1,5 +1,6 @@
 package br.thullyoo.ecommerce_backend.domain.purchase;
 
+import br.thullyoo.ecommerce_backend.domain.itempurchase.ItemPurchase;
 import br.thullyoo.ecommerce_backend.domain.product.Product;
 import br.thullyoo.ecommerce_backend.domain.user.User;
 import jakarta.persistence.*;
@@ -20,13 +21,8 @@ public class Purchase {
     @Column(name = "purchase_id")
     private Long id;
 
-    @ManyToMany
-    @JoinTable(
-            name = "purchase_product",
-            joinColumns = @JoinColumn(name = "purchase_id"),
-            inverseJoinColumns = @JoinColumn(name = "product_id")
-    )
-    private List<Product> products;
+    @OneToMany(mappedBy = "purchase", cascade = CascadeType.ALL)
+    private List<ItemPurchase> itemPurchases;
 
     @ManyToOne
     @JoinColumn(name = "user_id")
@@ -60,12 +56,12 @@ public class Purchase {
         this.id = id;
     }
 
-    public List<Product> getProducts() {
-        return products;
+    public List<ItemPurchase> getItemPurchases() {
+        return itemPurchases;
     }
 
-    public void setProducts(List<Product> products) {
-        this.products = products;
+    public void setItemPurchases(List<ItemPurchase> itemPurchases) {
+        this.itemPurchases = itemPurchases;
     }
 
     public User getUser() {
