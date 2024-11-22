@@ -3,6 +3,8 @@ package br.thullyoo.ecommerce_backend.domain.user;
 import br.thullyoo.ecommerce_backend.domain.purchase.Purchase;
 import br.thullyoo.ecommerce_backend.domain.product.Product;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -10,6 +12,8 @@ import java.util.UUID;
 
 @Entity
 @Table(name = "TB_USERS")
+@AllArgsConstructor
+@NoArgsConstructor
 public class User {
 
     @Id

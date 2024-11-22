@@ -3,12 +3,16 @@ package br.thullyoo.ecommerce_backend.domain.purchase;
 import br.thullyoo.ecommerce_backend.domain.product.Product;
 import br.thullyoo.ecommerce_backend.domain.user.User;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
 @Entity
 @Table(name = "TB_PURCHASES")
+@AllArgsConstructor
+@NoArgsConstructor
 public class Purchase {
 
     @Id
