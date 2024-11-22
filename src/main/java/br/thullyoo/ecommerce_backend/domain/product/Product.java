@@ -28,9 +28,19 @@ public class Product {
 
     private Boolean isAvailable;
 
+    private Long quantity;
+
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;
+
+    public Long getQuantity() {
+        return quantity;
+    }
+
+    public void setQuantity(Long quantity) {
+        this.quantity = quantity;
+    }
 
     public Boolean getAvailable() {
         return isAvailable;
