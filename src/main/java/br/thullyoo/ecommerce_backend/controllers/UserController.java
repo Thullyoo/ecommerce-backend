@@ -3,7 +3,6 @@ package br.thullyoo.ecommerce_backend.controllers;
 import br.thullyoo.ecommerce_backend.domain.user.User;
 import br.thullyoo.ecommerce_backend.domain.user.UserRequest;
 import br.thullyoo.ecommerce_backend.services.UserService;
-import org.apache.coyote.Response;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
