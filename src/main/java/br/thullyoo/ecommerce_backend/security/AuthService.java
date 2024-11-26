@@ -14,6 +14,6 @@ public class AuthService {
     }
 
     public String authenticate(Authentication authentication){
-
+        return this.tokenService.generateToken(authentication);
     }
 }
