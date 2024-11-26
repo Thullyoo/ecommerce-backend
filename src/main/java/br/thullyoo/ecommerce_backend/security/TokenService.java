@@ -4,7 +4,6 @@ import br.thullyoo.ecommerce_backend.domain.user.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.security.oauth2.jwt.JwtClaimsSet;
 import org.springframework.security.oauth2.jwt.JwtEncoder;
 import org.springframework.security.oauth2.jwt.JwtEncoderParameters;
@@ -23,6 +22,8 @@ public class TokenService {
 
         Instant issuedAt = Instant.now();
 
+        UserSecurity userSecurity = (UserSecurity) authentication.getPrincipal();
+
         var expirationTime = issuedAt.plusSeconds(120);
 
         var scopes = authentication.getAuthorities()
@@ -34,6 +35,7 @@ public class TokenService {
                 .issuer("spring-security")
                 .subject(authentication.getName())
                 .claim("scope", scopes)
+                .claim("id", userSecurity.getId())
                 .issuedAt(issuedAt)
                 .expiresAt(expirationTime)
                 .build();
