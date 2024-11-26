@@ -1,6 +1,7 @@
 package br.thullyoo.ecommerce_backend.domain.itempurchase;
 
 import br.thullyoo.ecommerce_backend.domain.product.Product;
+import br.thullyoo.ecommerce_backend.domain.purchase.Purchase;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
@@ -16,10 +17,14 @@ public class ItemPurchase {
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "produto_id")
+    @JoinColumn(name = "product_id")
     private Product product;
 
     private Long quantity;
+
+    @ManyToOne
+    @JoinColumn(name = "purchase_id")
+    private Purchase purchase;
 
     public ItemPurchase(Product product, Long quantity) {
         this.product = product;
