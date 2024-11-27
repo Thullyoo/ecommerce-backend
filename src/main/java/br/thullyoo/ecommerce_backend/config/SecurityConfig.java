@@ -39,9 +39,9 @@ public class SecurityConfig {
         return http
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests( auth ->{
-                    auth.requestMatchers("/login").permitAll();
-                    auth.requestMatchers("/register").permitAll();
-                    auth.anyRequest().authenticated();
+                    auth.requestMatchers("/user/login").permitAll()
+                    .requestMatchers("/user/register").permitAll()
+                    .anyRequest().authenticated();
                 })
                 .oauth2ResourceServer(conf -> {
                     conf.jwt( jwt ->{
@@ -62,7 +62,7 @@ public class SecurityConfig {
 
     @Bean
     JwtDecoder jwtDecoder(){
-        return NimbusJwtDecoder.withPublicKey(publicKey).build();
+        return NimbusJwtDecoder.withPublicKey(this.publicKey).build();
     }
 
     @Bean
