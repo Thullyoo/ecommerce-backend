@@ -21,7 +21,7 @@ public class Purchase {
     @Column(name = "purchase_id")
     private Long id;
 
-    @OneToMany(mappedBy = "purchase", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "purchase", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ItemPurchase> itemPurchases;
 
     @ManyToOne

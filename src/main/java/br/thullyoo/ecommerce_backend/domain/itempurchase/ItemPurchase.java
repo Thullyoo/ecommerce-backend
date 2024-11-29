@@ -2,6 +2,7 @@ package br.thullyoo.ecommerce_backend.domain.itempurchase;
 
 import br.thullyoo.ecommerce_backend.domain.product.Product;
 import br.thullyoo.ecommerce_backend.domain.purchase.Purchase;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
@@ -22,6 +23,7 @@ public class ItemPurchase {
 
     private Long quantity;
 
+    @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "purchase_id")
     private Purchase purchase;
@@ -53,5 +55,13 @@ public class ItemPurchase {
 
     public void setQuantity(Long quantity) {
         this.quantity = quantity;
+    }
+
+    public Purchase getPurchase() {
+        return purchase;
+    }
+
+    public void setPurchase(Purchase purchase) {
+        this.purchase = purchase;
     }
 }

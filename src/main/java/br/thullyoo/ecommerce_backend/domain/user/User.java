@@ -2,6 +2,7 @@ package br.thullyoo.ecommerce_backend.domain.user;
 
 import br.thullyoo.ecommerce_backend.domain.purchase.Purchase;
 import br.thullyoo.ecommerce_backend.domain.product.Product;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
@@ -33,9 +34,11 @@ public class User {
     @Column(unique = true)
     private String document;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "user")
     private List<Product> products;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "user")
     private List<Purchase> purchases;
 
