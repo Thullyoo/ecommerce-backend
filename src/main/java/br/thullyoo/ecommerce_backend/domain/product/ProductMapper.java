@@ -10,6 +10,7 @@ public interface ProductMapper {
     @Mapping(source = "description", target = "description")
     @Mapping(source = "value", target = "value")
     @Mapping(source = "url_image", target = "url_image")
+    @Mapping(source = "quantity", target = "quantity")
     Product toProduct(ProductRequest productRequest);
 
 }
