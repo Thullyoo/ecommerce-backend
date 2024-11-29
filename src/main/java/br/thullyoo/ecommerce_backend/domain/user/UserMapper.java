@@ -9,7 +9,7 @@ public interface UserMapper {
     @Mapping(source = "name", target = "name")
     @Mapping(source = "email", target = "email")
     @Mapping(source = "password", target = "password")
-    @Mapping(source = "date_of_birth", target = "date_of_birth") // Se precisar de formatação, use uma conversão adicional
+    @Mapping(source = "date_of_birth", target = "date_of_birth")
     @Mapping(source = "document", target = "document")
     User toUser(UserRequest userRequest);
 
