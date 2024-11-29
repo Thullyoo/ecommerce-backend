@@ -4,6 +4,8 @@ import br.thullyoo.ecommerce_backend.domain.purchase.Purchase;
 import br.thullyoo.ecommerce_backend.domain.purchase.PurchaseRequest;
 import br.thullyoo.ecommerce_backend.services.PurchaseService;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -20,8 +22,8 @@ public class PurchaseController {
     }
 
     @PostMapping
-    public ResponseEntity<Purchase> registerPurchase(@RequestBody PurchaseRequest purchaseRequest){
-        var purchase = purchaseService.registerPurchase(purchaseRequest);
+    public ResponseEntity<Purchase> registerPurchase(@RequestBody PurchaseRequest purchaseRequest, @AuthenticationPrincipal Jwt jwt){
+        var purchase = purchaseService.registerPurchase(purchaseRequest, jwt);
         return ResponseEntity.ok().body(purchase);
     }
 

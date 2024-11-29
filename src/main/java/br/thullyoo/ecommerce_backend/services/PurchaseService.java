@@ -9,12 +9,14 @@ import br.thullyoo.ecommerce_backend.domain.user.User;
 import br.thullyoo.ecommerce_backend.repositories.ProductRepository;
 import br.thullyoo.ecommerce_backend.repositories.PurchaseRepository;
 import br.thullyoo.ecommerce_backend.repositories.UserRepository;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 @Service
 public class PurchaseService {
@@ -31,9 +33,12 @@ public class PurchaseService {
         this.purchaseRepository = purchaseRepository;
     }
 
-    public Purchase registerPurchase(PurchaseRequest purchaseRequest){
+    public Purchase registerPurchase(PurchaseRequest purchaseRequest, Jwt jwt) {
 
-        Optional<User> user =  userRepository.findById(purchaseRequest.getUser_id());
+        String user_idString = jwt.getClaim("id");
+        UUID user_id = UUID.fromString(user_idString);
+
+        Optional<User> user =  userRepository.findById(user_id);
 
         if (user.isEmpty()){
             throw new RuntimeException("Usuário não encotrado");
