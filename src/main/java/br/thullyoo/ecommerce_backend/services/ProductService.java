@@ -5,6 +5,8 @@ import br.thullyoo.ecommerce_backend.domain.product.ProductMapper;
 import br.thullyoo.ecommerce_backend.domain.product.ProductRequest;
 import br.thullyoo.ecommerce_backend.repositories.ProductRepository;
 import br.thullyoo.ecommerce_backend.repositories.UserRepository;
+import jakarta.transaction.Transactional;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -13,34 +15,55 @@ import java.util.UUID;
 @Service
 public class ProductService {
 
-    private final ProductRepository produtoRepository;
+    private final ProductRepository productRepository;
 
     private final ProductMapper productMapper;
 
     private final UserRepository userRepository;
 
-    public ProductService(ProductRepository produtoRepository, ProductMapper productMapper, UserRepository userRepository) {
-        this.produtoRepository = produtoRepository;
+    public ProductService(ProductRepository productRepository, ProductMapper productMapper, UserRepository userRepository) {
+        this.productRepository = productRepository;
         this.productMapper = productMapper;
         this.userRepository = userRepository;
     }
 
-    public Product registerProduct(ProductRequest productRequest){
+    @Transactional
+    public Product registerProduct(ProductRequest productRequest, Jwt jwt){
+
+        String user_idString = jwt.getClaim("id");
+        UUID user_id = UUID.fromString(user_idString);
+
         Product product = productMapper.toProduct(productRequest);
-        var user = userRepository.findById(productRequest.getUser_id());
+        product.setAvailable(true);
+
+        var user = userRepository.findById(user_id);
+
         if (user.isEmpty()){
             throw new RuntimeException("Usuário não encontrado");
         }
+
         product.setUser(user.get());
         List<Product> products = user.get().getProducts();
         products.add(product);
         user.get().setProducts(products);
+        
         userRepository.save(user.get());
-        return produtoRepository.save(product);
+
+        if (product.getQuantity() <= 0){
+            product.setAvailable(false);
+        }
+
+        Product productSaved = productRepository.save(product);
+        return productSaved;
     }
 
-    public void deleteProduct(UUID product_id, UUID user_id){
-        produtoRepository.findById(product_id).ifPresentOrElse((produto) ->{
+    @Transactional
+    public void disableProduct(Jwt jwt, UUID product_id){
+
+        String user_idString = jwt.getClaim("id");
+        UUID user_id = UUID.fromString(user_idString);
+
+        productRepository.findById(product_id).ifPresentOrElse((produto) ->{
                 var user = userRepository.findById(user_id);
                 if (user.isEmpty()){
                     throw new RuntimeException("Usuário não encontrado");
@@ -48,7 +71,7 @@ public class ProductService {
                 user.get().getProducts().forEach((product -> {
                     if (product.equals(produto)){
                         produto.setAvailable(false);
-                        produtoRepository.save(produto);
+                        productRepository.save(produto);
                     }
                 }));
                 },
@@ -57,33 +80,46 @@ public class ProductService {
         });
     }
 
-    public Product editProduct(UUID id, ProductRequest productRequest){
-        produtoRepository.findById(id).ifPresentOrElse((produto) ->{
-                    var user = userRepository.findById(productRequest.getUser_id());
+    @Transactional
+    public Product editProduct(UUID id, ProductRequest productRequest, Jwt jwt){
+
+        String user_idString = jwt.getClaim("id");
+        UUID user_id = UUID.fromString(user_idString);
+
+        productRepository.findById(id).ifPresentOrElse((produto) ->{
+                    var user = userRepository.findById(user_id);
                     if (user.isEmpty()){
                         throw new RuntimeException("Usuário não encontrado");
                     }
                     user.get().getProducts().forEach((product -> {
-                        if (product.equals(produto)){
+                        if (product.getId() == id){
                             produto.setName(productRequest.getName());
                             produto.setDescription(productRequest.getDescription());
                             produto.setValue(productRequest.getValue());
                             produto.setUrl_image(productRequest.getUrl_image());
-                            produtoRepository.save(produto);
+                            produto.setQuantity(productRequest.getQuantity());
+                            productRepository.save(produto);
+                        }
+                        if (productRequest.getQuantity() > 0){
+                            product.setAvailable(true);
                         }
                     }));
                     },
                 ()->{
                     throw new RuntimeException("Produto não encotrado");
                 });
-        return produtoRepository.findById(id).get();
+        return productRepository.findById(id).get();
     }
 
     public List<Product> listProducts(){
-        return produtoRepository.findAll();
+        return productRepository.findAll();
     }
 
-    public List<Product> listProductByUserId(UUID user_id){
+    public List<Product> listProductByUserId(Jwt jwt){
+
+        String user_idString = jwt.getClaim("id");
+        UUID user_id = UUID.fromString(user_idString);
+
         var user = userRepository.findById(user_id);
         if (user.isEmpty()){
             throw new RuntimeException("Usuário não encontrado");

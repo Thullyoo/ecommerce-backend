@@ -30,16 +30,16 @@ public class ProductController {
         return ResponseEntity.ok().body(productService.listProducts());
     }
 
-    @PutMapping("/{produto_id}")
+    @PutMapping("/{product_id}")
     public ResponseEntity<Product> editProduct(@PathVariable("product_id")  UUID product_id, @RequestBody ProductRequest productRequest, @AuthenticationPrincipal Jwt jwt){
         var produtoLista = productService.editProduct(product_id, productRequest, jwt);
 
         return ResponseEntity.ok().body(produtoLista);
     }
 
-    @DeleteMapping("/{user_id}")
-    public ResponseEntity<Void> deleteProduct(@PathVariable("user_id") UUID user_id, @AuthenticationPrincipal Jwt jwt){
-        productService.deleteProduct(jwt, user_id);
+    @DeleteMapping("/{product_id}")
+    public ResponseEntity<Void> disableProduct(@PathVariable("product_id") UUID product_id, @AuthenticationPrincipal Jwt jwt){
+        productService.disableProduct(jwt, product_id);
 
         return ResponseEntity.noContent().build();
     }

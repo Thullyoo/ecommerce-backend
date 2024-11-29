@@ -13,13 +13,13 @@ public class ProductRequest {
     private String description;
     private Double value;
     private String url_image;
-    private Integer quantity;
+    private Long quantity;
 
-    public Integer getQuantity() {
+    public Long getQuantity() {
         return quantity;
     }
 
-    public void setQuantity(Integer quantity) {
+    public void setQuantity(Long quantity) {
         this.quantity = quantity;
     }
 
