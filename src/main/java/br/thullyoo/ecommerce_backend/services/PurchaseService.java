@@ -64,7 +64,11 @@ public class PurchaseService {
             total += product.get().getValue() * productPurchaseRequest.quantity();
             product.get().setQuantity(product.get().getQuantity() - productPurchaseRequest.quantity());
 
-            itemPurchases.add(new ItemPurchase(product.get(), productPurchaseRequest.quantity()));
+            ItemPurchase itemadd =  new ItemPurchase(product.get(), productPurchaseRequest.quantity());
+
+            itemPurchases.add(itemadd);
+
+            itemadd.setPurchase(purchase);
 
             productRepository.save(product.get());
 
@@ -79,4 +83,9 @@ public class PurchaseService {
 
         return purchase;
     }
+
+    public List<Purchase> listPurchase(){
+        return purchaseRepository.findAll();
+    }
+
 }
