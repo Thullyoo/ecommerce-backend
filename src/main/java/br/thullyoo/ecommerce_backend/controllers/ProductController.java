@@ -43,4 +43,10 @@ public class ProductController {
 
         return ResponseEntity.noContent().build();
     }
+
+    @GetMapping("/user")
+    public ResponseEntity<List<Product>> listProductsById(@AuthenticationPrincipal Jwt jwt){
+        List<Product> products = productService.listProductByUserId(jwt);
+        return ResponseEntity.ok().body(products);
+    }
 }
