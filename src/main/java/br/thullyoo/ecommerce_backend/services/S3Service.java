@@ -20,11 +20,12 @@ public class S3Service {
 
     public String registerImage(UUID product_id, MultipartFile file) throws IOException {
         try {
-            String fileName = product_id.toString();
+            String fileName = product_id.toString() + ".png";
 
             PutObjectRequest putObject = PutObjectRequest.builder()
                     .bucket("my-bucket")
                     .key(fileName)
+                    .contentType("image/png")
                     .build();
 
             s3Client.putObject(putObject, RequestBody.fromByteBuffer(ByteBuffer.wrap(file.getBytes())));
@@ -34,7 +35,9 @@ public class S3Service {
                     .key(fileName)
                     .build();
 
-            return s3Client.utilities().getUrl(request).toString();
+            String url = s3Client.utilities().getUrl(request).toString();
+
+            return url;
 
         } catch (IOException e){
             throw e;
