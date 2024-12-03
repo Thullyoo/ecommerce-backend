@@ -2,6 +2,7 @@ package br.thullyoo.ecommerce_backend.domain.product;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.UUID;
 
@@ -12,8 +13,16 @@ public class ProductRequest {
     private String name;
     private String description;
     private Double value;
-    private String url_image;
     private Long quantity;
+    private MultipartFile image;
+
+    public MultipartFile getImage() {
+        return image;
+    }
+
+    public void setImage(MultipartFile file) {
+        this.image = file;
+    }
 
     public Long getQuantity() {
         return quantity;
@@ -45,13 +54,5 @@ public class ProductRequest {
 
     public void setValue(Double value) {
         this.value = value;
-    }
-
-    public String getUrl_image() {
-        return url_image;
-    }
-
-    public void setUrl_image(String url_image) {
-        this.url_image = url_image;
     }
 }
