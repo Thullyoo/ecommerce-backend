@@ -9,6 +9,7 @@ import jakarta.transaction.Transactional;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.UUID;
 
@@ -21,14 +22,17 @@ public class ProductService {
 
     private final UserRepository userRepository;
 
-    public ProductService(ProductRepository productRepository, ProductMapper productMapper, UserRepository userRepository) {
+    private final S3Service s3Service;
+
+    public ProductService(ProductRepository productRepository, ProductMapper productMapper, UserRepository userRepository, S3Service s3Service) {
         this.productRepository = productRepository;
         this.productMapper = productMapper;
         this.userRepository = userRepository;
+        this.s3Service = s3Service;
     }
 
     @Transactional
-    public Product registerProduct(ProductRequest productRequest, Jwt jwt){
+    public Product registerProduct(ProductRequest productRequest, Jwt jwt) throws IOException {
 
         String user_idString = jwt.getClaim("id");
         UUID user_id = UUID.fromString(user_idString);
@@ -54,6 +58,13 @@ public class ProductService {
         }
 
         Product productSaved = productRepository.save(product);
+
+        String url_image = s3Service.registerImage(productSaved.getId(), productRequest.getImage());
+
+        productSaved.setUrl_image(url_image);
+
+        productRepository.save(productSaved);
+
         return productSaved;
     }
 
@@ -96,7 +107,11 @@ public class ProductService {
                             produto.setName(productRequest.getName());
                             produto.setDescription(productRequest.getDescription());
                             produto.setValue(productRequest.getValue());
-                            produto.setUrl_image(productRequest.getUrl_image());
+                            try {
+                                produto.setUrl_image(s3Service.registerImage(product.getId(), productRequest.getImage()));
+                            } catch (IOException e) {
+                                throw new RuntimeException(e);
+                            }
                             produto.setQuantity(productRequest.getQuantity());
                             productRepository.save(produto);
                         }
