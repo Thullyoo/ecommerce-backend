@@ -142,4 +142,8 @@ public class ProductService {
 
         return user.get().getProducts();
     }
+
+    public List<Product> getProductsByName(String name){
+        return productRepository.findByName(name);
+    }
 }

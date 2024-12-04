@@ -66,4 +66,10 @@ public class ProductController {
         List<Product> products = productService.listProductByUserId(jwt);
         return ResponseEntity.ok().body(products);
     }
+
+
+    @GetMapping("/{name}")
+    public ResponseEntity<List<Product>> getProductByName(@PathVariable("name") String name){
+        return ResponseEntity.ok().body(productService.getProductsByName(name));
+    }
 }
