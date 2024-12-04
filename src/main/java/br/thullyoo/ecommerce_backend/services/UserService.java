@@ -3,6 +3,7 @@ package br.thullyoo.ecommerce_backend.services;
 import br.thullyoo.ecommerce_backend.domain.product.Product;
 import br.thullyoo.ecommerce_backend.domain.purchase.Purchase;
 import br.thullyoo.ecommerce_backend.domain.user.User;
+import br.thullyoo.ecommerce_backend.domain.user.UserGetResponse;
 import br.thullyoo.ecommerce_backend.domain.user.UserMapper;
 import br.thullyoo.ecommerce_backend.domain.user.UserRequest;
 import br.thullyoo.ecommerce_backend.repositories.UserRepository;
@@ -10,10 +11,13 @@ import br.thullyoo.ecommerce_backend.security.AuthService;
 import br.thullyoo.ecommerce_backend.security.TokenDTO;
 import jakarta.transaction.Transactional;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.UUID;
 
 @Service
 public class UserService {
@@ -42,10 +46,24 @@ public class UserService {
         return userRepository.save(user);
     }
 
-    public TokenDTO login(Authentication authentication){
-        String token = authService.authenticate(authentication);
-        return new TokenDTO(token, 120L);
+    public UserGetResponse getUserById(Jwt jwt){
+
+        String idString = jwt.getClaim("id").toString();
+        UUID id = UUID.fromString(idString);
+
+        var user = userRepository.findById(id);
+
+        if  (user.isEmpty()){
+            throw new RuntimeException("User not founded");
+        }
+
+        return userMapper.toUserGetResponse(user.get());
+
     }
 
+    public TokenDTO login(Authentication authentication){
+        String token = authService.authenticate(authentication);
+        return new TokenDTO(token, 2000L);
+    }
 
 }
