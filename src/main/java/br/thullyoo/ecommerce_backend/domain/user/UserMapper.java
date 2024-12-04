@@ -13,6 +13,10 @@ public interface UserMapper {
     @Mapping(source = "document", target = "document")
     User toUser(UserRequest userRequest);
 
-
+    @Mapping(source = "name", target = "name")
+    @Mapping(source = "email", target = "email")
+    @Mapping(source = "date_of_birth", target = "date_of_birth")
+    @Mapping(source = "document", target = "document")
+    UserGetResponse toUserGetResponse(User user);
 
 }
