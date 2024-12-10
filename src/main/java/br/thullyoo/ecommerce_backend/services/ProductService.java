@@ -137,7 +137,7 @@ public class ProductService {
 
         var user = userRepository.findById(user_id);
         if (user.isEmpty()){
-            throw new RuntimeException("Usuário não encontrado");
+            throw new RuntimeException("User not founded");
         }
 
         return user.get().getProducts();
@@ -145,5 +145,13 @@ public class ProductService {
 
     public List<Product> getProductsByName(String name){
         return productRepository.findByName(name);
+    }
+
+    public Product getProductById(UUID id){
+        var product = productRepository.findById(id);
+        if  (product.isEmpty()){
+            throw new RuntimeException("Product not founded");
+        }
+        return product.get();
     }
 }

@@ -62,14 +62,19 @@ public class ProductController {
     }
 
     @GetMapping("/user")
-    public ResponseEntity<List<Product>> listProductsById(@AuthenticationPrincipal Jwt jwt){
+    public ResponseEntity<List<Product>> listProductsUserById(@AuthenticationPrincipal Jwt jwt){
         List<Product> products = productService.listProductByUserId(jwt);
         return ResponseEntity.ok().body(products);
     }
 
 
-    @GetMapping("/{name}")
+    @GetMapping("/byName/{name}")
     public ResponseEntity<List<Product>> getProductByName(@PathVariable("name") String name){
         return ResponseEntity.ok().body(productService.getProductsByName(name));
+    }
+
+    @GetMapping("/byId/{product_id}")
+    public ResponseEntity<Product> getProductById(@PathVariable("product_id") UUID id){
+        return ResponseEntity.ok().body(productService.getProductById(id));
     }
 }
