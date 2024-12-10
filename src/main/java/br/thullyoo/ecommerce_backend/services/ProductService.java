@@ -100,17 +100,19 @@ public class ProductService {
         productRepository.findById(id).ifPresentOrElse((produto) ->{
                     var user = userRepository.findById(user_id);
                     if (user.isEmpty()){
-                        throw new RuntimeException("Usuário não encontrado");
+                        throw new RuntimeException("User not found");
                     }
                     user.get().getProducts().forEach((product -> {
                         if (product.getId() == id){
                             produto.setName(productRequest.getName());
                             produto.setDescription(productRequest.getDescription());
                             produto.setValue(productRequest.getValue());
-                            try {
-                                produto.setUrl_image(s3Service.registerImage(product.getId(), productRequest.getImage()));
-                            } catch (IOException e) {
-                                throw new RuntimeException(e);
+                            if(productRequest.getImage() != null && !productRequest.getImage().isEmpty()) {
+                                try {
+                                    produto.setUrl_image(s3Service.registerImage(product.getId(), productRequest.getImage()));
+                                } catch (IOException e) {
+                                    throw new RuntimeException(e);
+                                }
                             }
                             produto.setQuantity(productRequest.getQuantity());
                             productRepository.save(produto);
@@ -121,7 +123,7 @@ public class ProductService {
                     }));
                     },
                 ()->{
-                    throw new RuntimeException("Produto não encotrado");
+                    throw new RuntimeException("Product not found");
                 });
         return productRepository.findById(id).get();
     }
