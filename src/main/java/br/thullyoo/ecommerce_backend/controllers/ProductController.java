@@ -48,7 +48,22 @@ public class ProductController {
     }
 
     @PutMapping("/{product_id}")
-    public ResponseEntity<Product> editProduct(@PathVariable("product_id")  UUID product_id, @RequestBody ProductRequest productRequest, @AuthenticationPrincipal Jwt jwt){
+    public ResponseEntity<Product> editProduct(
+            @PathVariable("product_id") UUID product_id,
+            @RequestParam("name") String name,
+            @RequestParam("description") String description,
+            @RequestParam("value") Double value,
+            @RequestParam("quantity") Long quantity,
+            @RequestParam(value = "image", required = false) MultipartFile image
+            , @AuthenticationPrincipal Jwt jwt)  throws IOException {
+
+        ProductRequest productRequest = new ProductRequest();
+        productRequest.setName(name);
+        productRequest.setDescription(description);
+        productRequest.setValue(value);
+        productRequest.setQuantity(quantity);
+        productRequest.setImage(image);
+
         var produtoLista = productService.editProduct(product_id, productRequest, jwt);
 
         return ResponseEntity.ok().body(produtoLista);
