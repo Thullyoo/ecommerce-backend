@@ -47,12 +47,19 @@ public class CartService {
             throw new RuntimeException("Product not found");
         }
 
-
         if(product.get().getUser().getId() == user.get().getId()){
             throw new RuntimeException("Owner can't possible to buy your items");
         }
 
         Optional<Cart> cart = cartRepository.findByUserId(user.get().getId());
+
+        for (CartItem item : cart.get().getItems()) {
+            if (item.getProduct().getId() == request.product_id()){
+                item.setQuantity(request.quantity());
+                cartRepository.save(cart.get());
+                return;
+            }
+        }
 
         CartItem cartItem = new CartItem();
 
