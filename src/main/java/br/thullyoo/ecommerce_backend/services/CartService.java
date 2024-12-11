@@ -12,7 +12,7 @@ import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.PostMapping;
+
 
 import java.util.Optional;
 import java.util.UUID;
@@ -28,6 +28,9 @@ public class CartService {
 
     @Autowired
     private CartRepository cartRepository;
+
+    @Autowired
+    private CartItemRepository cartItemRepository;
 
     @Transactional
     public void addCartItem(CardItemRequest request, Jwt jwt){
@@ -68,6 +71,26 @@ public class CartService {
         cartRepository.save(cart.get());
     }
 
+    public void removeItemCart(Long itemCart_id ,Jwt jwt){
+        Optional<Cart> cart = this.cartRepository.findByUserId(UUID.fromString(jwt.getClaim("id")));
+
+        Optional<CartItem> cartItem = this.cartItemRepository.findById(itemCart_id);
+
+        if (cart.isEmpty()){
+            throw new RuntimeException("Cart not found");
+        }
+
+        if (cartItem.isEmpty()){
+            throw new RuntimeException("CartItem not found");
+        }
+
+        cart.get().getItems().remove(cartItem.get());
+
+        cartRepository.save(cart.get());
+
+
+        System.out.println("cheguei aqui");
+    }
 
 
 
