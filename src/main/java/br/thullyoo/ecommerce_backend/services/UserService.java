@@ -1,11 +1,13 @@
 package br.thullyoo.ecommerce_backend.services;
 
+import br.thullyoo.ecommerce_backend.domain.cart.Cart;
 import br.thullyoo.ecommerce_backend.domain.product.Product;
 import br.thullyoo.ecommerce_backend.domain.purchase.Purchase;
 import br.thullyoo.ecommerce_backend.domain.user.User;
 import br.thullyoo.ecommerce_backend.domain.user.UserGetResponse;
 import br.thullyoo.ecommerce_backend.domain.user.UserMapper;
 import br.thullyoo.ecommerce_backend.domain.user.UserRequest;
+import br.thullyoo.ecommerce_backend.repositories.CartRepository;
 import br.thullyoo.ecommerce_backend.repositories.UserRepository;
 import br.thullyoo.ecommerce_backend.security.AuthService;
 import br.thullyoo.ecommerce_backend.security.TokenDTO;
@@ -30,11 +32,14 @@ public class UserService {
 
     private final AuthService authService;
 
-    public UserService(UserRepository userRepository, UserMapper userMapper, PasswordEncoder passwordEncoder, AuthService authService) {
+    private final CartRepository cartRepository;
+
+    public UserService(UserRepository userRepository, UserMapper userMapper, PasswordEncoder passwordEncoder, AuthService authService, CartRepository cartRepository) {
         this.userRepository = userRepository;
         this.userMapper = userMapper;
         this.passwordEncoder = passwordEncoder;
         this.authService = authService;
+        this.cartRepository = cartRepository;
     }
 
     @Transactional
@@ -43,6 +48,10 @@ public class UserService {
         user.setProducts(new ArrayList<Product>());
         user.setPurchases(new ArrayList<Purchase>());
         user.setPassword(passwordEncoder.encode(user.getPassword()));
+        Cart cart = new Cart();
+        cart.setUser(user);
+        cart.setItems(new ArrayList<>());
+        cartRepository.save(cart);
         return userRepository.save(user);
     }
 
