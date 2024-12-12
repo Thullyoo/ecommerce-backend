@@ -3,6 +3,7 @@ package br.thullyoo.ecommerce_backend.services;
 import br.thullyoo.ecommerce_backend.domain.cart.Cart;
 import br.thullyoo.ecommerce_backend.domain.cartItem.CardItemRequest;
 import br.thullyoo.ecommerce_backend.domain.cartItem.CartItem;
+import br.thullyoo.ecommerce_backend.domain.cartItem.CartItemResponse;
 import br.thullyoo.ecommerce_backend.domain.product.Product;
 import br.thullyoo.ecommerce_backend.repositories.CartItemRepository;
 import br.thullyoo.ecommerce_backend.repositories.CartRepository;
@@ -14,6 +15,8 @@ import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.stereotype.Service;
 
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -79,6 +82,7 @@ public class CartService {
     }
 
     public void removeItemCart(Long itemCart_id ,Jwt jwt){
+
         Optional<Cart> cart = this.cartRepository.findByUserId(UUID.fromString(jwt.getClaim("id")));
 
         Optional<CartItem> cartItem = this.cartItemRepository.findById(itemCart_id);
@@ -99,6 +103,26 @@ public class CartService {
         System.out.println("cheguei aqui");
     }
 
+        public List<CartItemResponse> getCartByUserId(Jwt jwt){
+
+            Optional<Cart> cart = this.cartRepository.findByUserId(UUID.fromString(jwt.getClaim("id")));
+
+            if (cart.isEmpty()){
+                throw new RuntimeException("Cart not found");
+            }
+
+            List<CartItemResponse> cartItemList = new ArrayList<>();
+
+            if(cart.get().getItems().size() <= 0){
+                throw new RuntimeException("User doesn't have a product in their cart");
+            }
+
+            cart.get().getItems().forEach(item -> {
+                cartItemList.add(new CartItemResponse(item.getProduct(), item.getQuantity()));
+            });
+
+            return cartItemList;
+        }
 
 
 }
