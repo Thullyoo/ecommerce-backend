@@ -1,12 +1,15 @@
 package br.thullyoo.ecommerce_backend.controllers;
 
 import br.thullyoo.ecommerce_backend.domain.cartItem.CardItemRequest;
+import br.thullyoo.ecommerce_backend.domain.cartItem.CartItemResponse;
 import br.thullyoo.ecommerce_backend.services.CartService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/cart")
@@ -25,5 +28,10 @@ public class CartController {
     public ResponseEntity<Void> removeItemCart(@PathVariable("itemCart_id") Long itemCart_id, @AuthenticationPrincipal Jwt jwt){
         this.cartService.removeItemCart(itemCart_id, jwt);
         return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping
+    public ResponseEntity<List<CartItemResponse>> getCartByUserId(@AuthenticationPrincipal Jwt jwt){
+        return ResponseEntity.ok().body(cartService.getCartByUserId(jwt));
     }
 }
