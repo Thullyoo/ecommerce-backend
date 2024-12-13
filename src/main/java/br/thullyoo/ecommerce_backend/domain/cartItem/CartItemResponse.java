@@ -1,7 +1,7 @@
 package br.thullyoo.ecommerce_backend.domain.cartItem;
 
 import br.thullyoo.ecommerce_backend.domain.product.Product;
-import br.thullyoo.ecommerce_backend.domain.purchase.ProductDTO;
+import br.thullyoo.ecommerce_backend.domain.product.ProductDTO;
 
 public record CartItemResponse(ProductDTO product, int quantity) {
     public CartItemResponse(Product product, int quantity) {
