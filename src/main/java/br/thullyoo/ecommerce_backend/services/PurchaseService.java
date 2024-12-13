@@ -1,11 +1,14 @@
 package br.thullyoo.ecommerce_backend.services;
 
+import br.thullyoo.ecommerce_backend.domain.cart.Cart;
+import br.thullyoo.ecommerce_backend.domain.cartItem.CartItem;
 import br.thullyoo.ecommerce_backend.domain.itempurchase.ItemPurchase;
 import br.thullyoo.ecommerce_backend.domain.product.Product;
 import br.thullyoo.ecommerce_backend.domain.purchase.ProductPurchaseRequest;
 import br.thullyoo.ecommerce_backend.domain.purchase.Purchase;
 import br.thullyoo.ecommerce_backend.domain.purchase.PurchaseRequest;
 import br.thullyoo.ecommerce_backend.domain.user.User;
+import br.thullyoo.ecommerce_backend.repositories.CartRepository;
 import br.thullyoo.ecommerce_backend.repositories.ProductRepository;
 import br.thullyoo.ecommerce_backend.repositories.PurchaseRepository;
 import br.thullyoo.ecommerce_backend.repositories.UserRepository;
@@ -27,13 +30,16 @@ public class PurchaseService {
 
     private final PurchaseRepository purchaseRepository;
 
-    public PurchaseService(UserRepository userRepository, ProductRepository productRepository, PurchaseRepository purchaseRepository) {
+    private final CartRepository cartRepository;
+
+    public PurchaseService(UserRepository userRepository, ProductRepository productRepository, PurchaseRepository purchaseRepository, CartRepository cartRepository) {
         this.userRepository = userRepository;
         this.productRepository = productRepository;
         this.purchaseRepository = purchaseRepository;
+        this.cartRepository = cartRepository;
     }
 
-    public Purchase registerPurchase(PurchaseRequest purchaseRequest, Jwt jwt) {
+    public void registerPurchase(Jwt jwt) {
 
         String user_idString = jwt.getClaim("id");
         UUID user_id = UUID.fromString(user_idString);
@@ -41,7 +47,17 @@ public class PurchaseService {
         Optional<User> user =  userRepository.findById(user_id);
 
         if (user.isEmpty()){
-            throw new RuntimeException("Usuário não encotrado");
+            throw new RuntimeException("User not found");
+        }
+
+        Optional<Cart> cart = cartRepository.findByUserId(user_id);
+
+        if (cart.isEmpty()){
+            throw new RuntimeException("Cart not found");
+        }
+
+        if (cart.get().getItems().size() <= 0){
+            throw new RuntimeException("Cart's empty");
         }
 
         Purchase purchase = new Purchase();
@@ -50,30 +66,30 @@ public class PurchaseService {
 
         Double total = 0.0;
 
-        for(ProductPurchaseRequest productPurchaseRequest : purchaseRequest.getProducts())  {
-            Optional<Product> product = productRepository.findById(productPurchaseRequest.product_id());
-            if (product.isEmpty()){
-                throw new RuntimeException("Produto não encontrado");
-            }
-            if (!product.get().getAvailable()){
-                throw new RuntimeException("Produto não disponível");
-            }
-            if (product.get().getQuantity() - productPurchaseRequest.quantity() < 0){
-                throw new RuntimeException("Quantidade insuficiente disponível");
-            }
-            total += product.get().getValue() * productPurchaseRequest.quantity();
-            product.get().setQuantity(product.get().getQuantity() - productPurchaseRequest.quantity());
 
-            ItemPurchase itemadd =  new ItemPurchase(product.get(), productPurchaseRequest.quantity());
+        for(CartItem cartItem : cart.get().getItems())  {
+
+            Product product = cartItem.getProduct();
+
+            if (!product.getAvailable()){
+                throw new RuntimeException("Product's unavailable");
+            }
+
+            if (product.getQuantity() - cartItem.getQuantity() < 0){
+                throw new RuntimeException("Quantity insufficient");
+            }
+            total += product.getValue() * cartItem.getQuantity();
+            product.setQuantity(product.getQuantity() - cartItem.getQuantity());
+
+            ItemPurchase itemadd =  new ItemPurchase(product, cartItem.getQuantity());
 
             itemPurchases.add(itemadd);
 
             itemadd.setPurchase(purchase);
 
-            productRepository.save(product.get());
+            productRepository.save(product);
 
         }
-
         purchase.setItemPurchases(itemPurchases);
         purchase.setTotal(total);
         purchase.setDatePurchase(LocalDateTime.now());
@@ -81,7 +97,8 @@ public class PurchaseService {
 
         purchaseRepository.save(purchase);
 
-        return purchase;
+        cart.get().getItems().clear();
+        cartRepository.save(cart.get());
     }
 
     public List<Purchase> listPurchase(){
