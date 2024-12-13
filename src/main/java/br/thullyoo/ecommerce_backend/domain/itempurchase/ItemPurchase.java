@@ -21,14 +21,14 @@ public class ItemPurchase {
     @JoinColumn(name = "product_id")
     private Product product;
 
-    private Long quantity;
+    private int quantity;
 
     @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "purchase_id")
     private Purchase purchase;
 
-    public ItemPurchase(Product product, Long quantity) {
+    public ItemPurchase(Product product, int quantity) {
         this.product = product;
         this.quantity = quantity;
     }
@@ -49,11 +49,11 @@ public class ItemPurchase {
         this.product = product;
     }
 
-    public Long getQuantity() {
+    public int getQuantity() {
         return quantity;
     }
 
-    public void setQuantity(Long quantity) {
+    public void setQuantity(int quantity) {
         this.quantity = quantity;
     }
 
