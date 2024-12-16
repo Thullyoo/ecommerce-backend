@@ -101,8 +101,12 @@ public class PurchaseService {
         cartRepository.save(cart.get());
     }
 
-    public List<Purchase> listPurchase(){
-        return purchaseRepository.findAll();
+    public List<Purchase> listPurchase(Jwt jwt){
+
+        String user_idString = jwt.getClaim("id");
+        UUID user_id = UUID.fromString(user_idString);
+
+        return this.purchaseRepository.findByUserId(user_id);
     }
 
 }
