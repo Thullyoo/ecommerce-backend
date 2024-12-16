@@ -28,8 +28,8 @@ public class PurchaseController {
     }
 
     @GetMapping
-    public ResponseEntity<List<Purchase>> listPurchase(){
-        return ResponseEntity.ok().body(purchaseService.listPurchase());
+    public ResponseEntity<List<Purchase>> listPurchase(@AuthenticationPrincipal Jwt jwt){
+        return ResponseEntity.ok().body(purchaseService.listPurchase(jwt));
     }
 
 }
