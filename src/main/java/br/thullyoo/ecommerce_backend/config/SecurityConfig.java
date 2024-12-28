@@ -1,11 +1,13 @@
 package br.thullyoo.ecommerce_backend.config;
 
+import br.thullyoo.ecommerce_backend.security.CustomAuthenticationEntryPoint;
 import com.nimbusds.jose.jwk.JWK;
 import com.nimbusds.jose.jwk.JWKSet;
 import com.nimbusds.jose.jwk.RSAKey;
 import com.nimbusds.jose.jwk.source.ImmutableJWKSet;
 import com.nimbusds.jose.jwk.source.JWKSource;
 import com.nimbusds.jose.proc.SecurityContext;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -38,6 +40,9 @@ public class SecurityConfig {
     @Value("${jwt.priv}")
     private RSAPrivateKey privateKey;
 
+    @Autowired
+    private CustomAuthenticationEntryPoint customAuthenticationEntryPoint;
+
     @Bean
     SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         return http
@@ -54,7 +59,9 @@ public class SecurityConfig {
                         jwt.decoder(this.jwtDecoder());
                     });
                 })
-                .httpBasic(Customizer.withDefaults())
+                .httpBasic( httpBasic ->{
+                    httpBasic.authenticationEntryPoint(customAuthenticationEntryPoint);
+                })
                 .sessionManagement(session -> {
                     session.sessionCreationPolicy(SessionCreationPolicy.STATELESS);
                 })
